@@ -122,14 +122,14 @@ export function ExportPanel({
             <ToggleGroupItem
               key={preset}
               value={preset}
-              className="bg-background dark:bg-input/30 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+              className="bg-background dark:not-aria-pressed:bg-input/30 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
             >
               {preset}
             </ToggleGroupItem>
           ))}
           <ToggleGroupItem
             value={CUSTOM}
-            className="bg-background dark:bg-input/30 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+            className="bg-background dark:not-aria-pressed:bg-input/30 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
           >
             직접 입력
           </ToggleGroupItem>
