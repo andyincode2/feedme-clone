@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   ArticleCard,
@@ -16,6 +16,7 @@ import {
   type ConvertResponse,
 } from "@/features/conversion";
 import { ExportPanel } from "@/features/export";
+import { SaveButton } from "@/features/saved-articles";
 
 type View =
   | { status: "idle" }
@@ -23,9 +24,22 @@ type View =
   | { status: "loading" }
   | ConvertResponse;
 
-export function ConverterScreen() {
-  const [url, setUrl] = useState("");
-  const [view, setView] = useState<View>({ status: "idle" });
+export function ConverterScreen({
+  signedIn = false,
+  initialUrl,
+  autoSave = false,
+}: {
+  signedIn?: boolean;
+  /** Convert this URL right away (returning from "로그인하고 저장"). */
+  initialUrl?: string;
+  /** Also save that first result unless it is already saved. */
+  autoSave?: boolean;
+}) {
+  const [url, setUrl] = useState(initialUrl ?? "");
+  const [autoSaveUrl, setAutoSaveUrl] = useState(autoSave ? initialUrl?.trim() : undefined);
+  const [view, setView] = useState<View>(() =>
+    !initialUrl ? { status: "idle" } : isWebUrl(initialUrl.trim()) ? { status: "loading" } : { status: "invalid" }
+  );
   const inputRef = useRef<HTMLInputElement>(null);
   // Ignores a response that arrives after the user cleared or restarted.
   const requestId = useRef(0);
@@ -43,8 +57,21 @@ export function ConverterScreen() {
     if (id === requestId.current) setView(result);
   }
 
+  // Arriving with ?url= starts in "loading"; fetch that result once.
+  useEffect(() => {
+    if (!initialUrl) return;
+    // Drop ?url=&save= so a refresh doesn't convert and save again.
+    window.history.replaceState(null, "", "/");
+    if (!isWebUrl(initialUrl.trim())) return;
+    const id = ++requestId.current;
+    requestConversion(initialUrl.trim()).then((result) => {
+      if (id === requestId.current) setView(result);
+    });
+  }, [initialUrl]);
+
   function clear() {
     requestId.current++;
+    setAutoSaveUrl(undefined);
     setUrl("");
     setView({ status: "idle" });
     inputRef.current?.focus();
@@ -88,6 +115,13 @@ export function ConverterScreen() {
             <ExportPanel
               markdown={articleMarkdown(view.article)}
               filename={markdownFilename(view.article)}
+              actions={
+                <SaveButton
+                  snapshot={view.article}
+                  signedIn={signedIn}
+                  autoSave={autoSaveUrl === view.article.url}
+                />
+              }
             />
           }
         />

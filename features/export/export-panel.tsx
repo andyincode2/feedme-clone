@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import {
   CheckIcon,
   ClipboardIcon,
@@ -28,9 +28,12 @@ const LLMS: Llm[] = ["ChatGPT", "Claude"];
 export function ExportPanel({
   markdown,
   filename,
+  actions,
 }: {
   markdown: string;
   filename: string;
+  /** More buttons for the copy/download row, such as saving. */
+  actions?: ReactNode;
 }) {
   const [choice, setChoice] = useState<string | null>(null);
   const [customPrompt, setCustomPrompt] = useState("");
@@ -103,6 +106,7 @@ export function ExportPanel({
           <DownloadIcon />
           .md 다운로드
         </Button>
+        {actions}
       </div>
 
       <div>

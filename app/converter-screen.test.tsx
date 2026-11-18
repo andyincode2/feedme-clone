@@ -6,6 +6,9 @@ import type { Article, ConvertResponse } from "@/features/conversion";
 
 import { ConverterScreen } from "./converter-screen";
 
+// The save button navigates with the App Router, which these tests don't mount.
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push: vi.fn() }) }));
+
 const SHORT: Article = {
   url: "https://stephango.com/saw",
   title: "Use the saw, fear the saw",

@@ -1,22 +1,16 @@
-import { ThemeToggle } from "@/features/theme";
+import { getCurrentUser } from "@/lib/supabase/current-user";
 
+import { AppHeader } from "./app-header";
 import { ConverterScreen } from "./converter-screen";
 
-export default function Home() {
+export default async function Home({ searchParams }: PageProps<"/">) {
+  const [user, params] = await Promise.all([getCurrentUser(), searchParams]);
+  // "로그인하고 저장" comes back here with ?url=...&save=1.
+  const returnUrl = typeof params.url === "string" ? params.url : undefined;
+
   return (
     <main className="mx-auto flex w-full max-w-180 flex-1 flex-col gap-6 px-4 pt-3">
-      <header className="flex items-center justify-between py-1">
-        <div className="flex items-center gap-2 text-[15px] font-semibold">
-          <span
-            aria-hidden
-            className="grid size-6 place-items-center rounded-md bg-primary font-mono text-[11px] text-primary-foreground"
-          >
-            md
-          </span>
-          FeedMe
-        </div>
-        <ThemeToggle />
-      </header>
+      <AppHeader user={user} />
 
       <div>
         <h1 className="mb-1.5 text-[22px] font-semibold tracking-tight text-balance break-keep sm:text-[26px]">
@@ -28,10 +22,14 @@ export default function Home() {
         </p>
       </div>
 
-      <ConverterScreen />
+      <ConverterScreen
+        signedIn={Boolean(user)}
+        initialUrl={returnUrl}
+        autoSave={Boolean(returnUrl) && params.save === "1"}
+      />
 
       <p className="pt-2 pb-6 text-center text-xs text-muted-foreground">
-        입력한 URL과 프롬프트는 저장하지 않습니다.
+        저장 버튼을 누른 글만 내 계정에 저장합니다. 프롬프트는 저장하지 않습니다.
       </p>
     </main>
   );
