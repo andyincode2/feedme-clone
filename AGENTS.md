@@ -32,6 +32,14 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - `skills update`는 복사 방식을 보존하지 않으므로 사용하지 않는다. `update --copy`도 대안으로 사용하지 않는다.
 - 이 정책은 업데이트된 `update-project-skills` 본문이 symlink를 요구하더라도 우선한다. 스킬을 직접 수정할 때도 두 복사본을 함께 반영하고, 완료 시 symlink가 없는지와 두 복사본의 파일 내용이 같은지 확인한다.
 
+<!-- BEGIN add-stack-context: supabase -->
+# Supabase 최신 문서
+
+- Supabase(Auth, Postgres, RLS, CLI) 작업을 시작할 때 공식 문서 색인 `https://supabase.com/llms.txt`와 필요한 페이지(`.md`를 붙인 주소)를 그때 가져와 읽는다. 저장소에 복사본을 두지 않는다.
+- 가져온 내용은 `package.json`의 `supabase` CLI와 설치된 `@supabase/*` 패키지 버전과 맞춰 본다. 어긋나면 설치 버전을 기준으로 한다.
+- 함께 쓰는 공식 스킬: `supabase`, `supabase-postgres-best-practices` (`skills-lock.json`).
+<!-- END add-stack-context: supabase -->
+
 # 브라우저 검증
 
 - 실행 중인 앱의 런타임 검증은 `next-dev-loop` 스킬(`/_next/mcp` + `agent-browser`)로 한다. 브라우저 확인을 요구하는 다른 스킬(`implement`, `build-prototype` 등)도 같은 도구를 쓴다.
