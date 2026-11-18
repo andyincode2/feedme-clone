@@ -4,7 +4,7 @@ import { updateSession } from "@/lib/supabase/proxy";
 
 // Signed-out visitors to these paths go to login and come back afterwards.
 // Pages still verify the user on the server; this is only the redirect.
-const PROTECTED_PATHS = ["/settings"];
+const PROTECTED_PATHS = ["/settings", "/saved"];
 
 export async function proxy(request: NextRequest) {
   return await updateSession(request, PROTECTED_PATHS);

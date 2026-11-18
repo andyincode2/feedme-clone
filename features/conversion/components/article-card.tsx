@@ -11,9 +11,12 @@ import { MarkdownView } from "./markdown-view";
 export function ArticleCard({
   article,
   actions,
+  note,
 }: {
   article: Article;
   actions: ReactNode;
+  /** A line under the meta, such as when a saved copy was made. */
+  note?: ReactNode;
 }) {
   const items = metaItems(article, articleMarkdown(article).length);
 
@@ -50,6 +53,7 @@ export function ArticleCard({
             </Fragment>
           ))}
         </div>
+        {note && <p className="text-[13px] text-muted-foreground">{note}</p>}
       </CardHeader>
       <Separator />
       {actions}

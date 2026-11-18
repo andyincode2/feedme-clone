@@ -37,3 +37,14 @@ export async function isArticleSaved(url: string): Promise<boolean> {
     .maybeSingle();
   return Boolean(data);
 }
+
+export async function deleteSavedArticle(id: number): Promise<{ ok: boolean }> {
+  const supabase = await createClient();
+  // RLS lets this delete only the signed-in user's own row.
+  const { data, error } = await supabase
+    .from("saved_articles")
+    .delete()
+    .eq("id", id)
+    .select("id");
+  return { ok: !error && Boolean(data?.length) };
+}
